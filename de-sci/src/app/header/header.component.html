@@ -1,0 +1,21 @@
+<header fxLayout="row">
+  <h1 fxFlex="20"><span style="color: black">De</span><span style="color: royalblue">Sci</span></h1>
+  <nav fxFlex="60" fxLayout="row" fxLayoutGap="2em" fxLayoutAlign="center center">
+    <a mat-button routerLink="/">Home</a>
+    <a mat-button routerLink="/my-papers">Your Research</a>
+    <a mat-button routerLink="/about">About</a>
+  </nav>
+
+  <div fxFlex="20" fxLayoutAlign="end" >
+    <button mat-mini-fab [matMenuTriggerFor]="menu" class="profile-button" color="primary" aria-label="Profile">
+      <mat-icon>person</mat-icon>
+    </button>
+
+    <mat-menu fxLayout="column" fxLayoutAlign="center" #menu="matMenu">
+      <h3>Tokens: {{userTokens}}</h3>
+      <h3>Papers: {{numPapers}}</h3>
+      <button mat-menu-item [class]="'logout'">Logout</button>
+    </mat-menu>
+  </div>
+
+</header>

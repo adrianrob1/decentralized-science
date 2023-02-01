@@ -1,0 +1,36 @@
+header {
+  background-color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5em;
+  font-weight: bold;
+  z-index: 1;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+}
+
+a {
+  color: #000;
+  text-decoration: none;
+  font-size: large;
+  font-weight: normal;
+}
+
+profile-button {
+  display: flex;
+  justify-content: center;
+  width: 120px;
+}
+
+h3 {
+  padding: 12px 16px 12px 16px;
+  margin: 0;
+}
+
+mat-menu {
+  justify-content: center;
+}
