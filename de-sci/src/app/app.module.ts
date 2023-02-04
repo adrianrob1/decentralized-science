@@ -14,6 +14,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { HomeComponent } from './home/home.component';
 import { MyPapersComponent } from './my-papers/my-papers.component';
 import { AboutComponent } from './about/about.component';
+import { PublishPaperComponent } from './publish-paper/publish-paper.component';
+import { PublishReviewComponent } from './publish-review/publish-review.component';
+import { PaperDetailComponent } from './paper-detail/paper-detail.component';
+import { PaperCardComponent } from './shared/components/paper-card/paper-card.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,11 @@ import { AboutComponent } from './about/about.component';
     HeaderComponent,
     HomeComponent,
     MyPapersComponent,
-    AboutComponent
+    AboutComponent,
+    PublishPaperComponent,
+    PublishReviewComponent,
+    PaperDetailComponent,
+    PaperCardComponent
   ],
   imports: [
     BrowserModule,

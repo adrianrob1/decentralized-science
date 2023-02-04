@@ -1,0 +1,19 @@
+<mat-card>
+  <mat-card-content fxFill fxLayout="row" fxLayoutGap="2em">
+    <img fxFlex="30" src="assets/images/placeholder.jpg" alt="placeholder">
+    <div fxLayout="column" fxFlex>
+      <h2>{{paper.title | slice:0:maxTextLengthTitle}} {{maxTextLengthTitle < 40 ? '[...]' : ''}} </h2>
+      <p>{{paper.abstract | slice:0:maxTextLength}} [...]</p>
+
+      <div fxFlexOffset="1em" fxLayout="row" fxLayoutGap="1em">
+        <button *ngFor="let keyword of paper.keywords?.slice(0, maxKeywords)" mat-button color="primary">{{keyword}}</button>
+      </div>
+    </div>
+
+    <div fxFlex="15" fxLayout="column" fxLayoutGap="1em" fxLayoutAlign="center">
+      <h3>{{reputation}} &#8476;</h3>
+      <button mat-raised-button [routerLink]="'paper/' + paper.id" color="primary">Review</button>
+      <button mat-raised-button color="secondary">Read More</button>
+    </div>
+  </mat-card-content>
+</mat-card>

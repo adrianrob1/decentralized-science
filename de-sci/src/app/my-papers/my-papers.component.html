@@ -1,21 +1,4 @@
 <h1>Your Research</h1>
 <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1em">
-  <mat-card>
-    <mat-card-content fxLayout="row" fxLayoutGap="2em">
-      <img style="height: 200px" src="assets/images/placeholder.jpg" alt="placeholder">
-      <div fxLayout="column">
-        <h2>Placeholder</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nunc nisl aliquet nunc, vel aliquet nunc nisl eu nunc. Sed euismod, nisl nec ultricies lacinia, nunc nisl aliquet nunc, vel aliquet nunc nisl eu nunc.</p>
-        
-        <div fxFlexOffseto="1em" fxLayout="row" fxLayoutGap="1em">
-          <button mat-button color="primary">Instance Segmentation</button>
-          <button mat-button color="primary">Object Detection</button>
-        </div>
-      </div>
-      <div fxFlex="15" fxLayout="column" fxLayoutGap="1em" fxLayoutAlign="center">
-        <h3>+100 &#8476;</h3>
-        <button mat-raised-button color="secondary">Read More</button>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <app-paper-card fxFill *ngFor="let paper of papers" [paper]="paper" [reputation]="paperReputation[paper.id]"></app-paper-card>
 </div>
