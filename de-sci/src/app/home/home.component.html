@@ -1,4 +1,7 @@
-<h1>Suggested Research</h1>
+<div class="page-header" fxLayout="row" fxLayoutAlign="space-between center">
+  <h1>Suggested Research</h1>
+  <button mat-raised-button routerLink="/publish" color="primary" fxFlexOffset="1em">Publish</button>
+</div>
 <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1em">
   <app-paper-card fxFill *ngFor="let paper of papers" [paper]="paper" [reputation]="paperReputation[paper.id]"></app-paper-card>
 </div>

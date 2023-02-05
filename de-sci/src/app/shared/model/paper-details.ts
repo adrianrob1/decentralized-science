@@ -6,4 +6,5 @@ export interface PaperDetails {
   keywords?: string[];
   date?: string;
   doi?: string;
+  thumbnail?: string;
 }

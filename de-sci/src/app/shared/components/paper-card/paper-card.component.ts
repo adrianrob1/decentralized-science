@@ -1,5 +1,8 @@
 import { Component, HostListener, Input } from '@angular/core';
+import { PublishReviewDialog } from 'src/app/publish-review/publish-review.component';
 import { PaperDetails } from '../../model/paper-details';
+import { MatDialog } from '@angular/material/dialog';
+import { Review } from '../../model/review';
 
 @Component({
   selector: 'app-paper-card',
@@ -10,6 +13,9 @@ export class PaperCardComponent {
   maxTextLength: number = 200;
   maxTextLengthTitle: number = 100;
   maxKeywords: number = 5;
+
+  @Input()
+  reviewEnabled = true;
 
   @Input() paper: PaperDetails = {
     id: 0,
@@ -23,7 +29,7 @@ export class PaperCardComponent {
 
   @Input() reputation: number = 0;
 
-  constructor() {}
+  constructor(private dialog: MatDialog) {}
 
   ngOnInit() {
     this.maxTextLength = window.innerWidth < 900 ? 80 : 200;
@@ -44,5 +50,16 @@ export class PaperCardComponent {
 
     this.maxKeywords = window.innerWidth < 900 ? 2 : 5;
     this.maxKeywords = window.innerWidth < 600 ? 1 : this.maxKeywords;
+  }
+
+  reviewPaper(paperId: number): void {
+    const data: Review = {paperId: paperId};
+    const dialogRef = this.dialog.open(PublishReviewDialog, {
+      data: data,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Result: ', result);
+    });
   }
 }

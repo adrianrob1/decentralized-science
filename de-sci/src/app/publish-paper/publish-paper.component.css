@@ -1,0 +1,7 @@
+.page-container {
+  margin:  0 10% 0 10%;
+}
+
+mat-card {
+  width: 50%;
+}

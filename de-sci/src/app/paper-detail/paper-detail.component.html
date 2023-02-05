@@ -1,1 +1,51 @@
-<p>paper-detail works!</p>
+<!-- Paper Details page -->
+
+<div class="page-header">
+  <h1>Paper Information</h1>
+</div>
+
+<div class="page-container" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="2em">
+  <mat-card class="info-container">
+    <mat-card-content>
+      <!-- <img style="height: 200px" src="assets/images/placeholder.jpg" alt="placeholder"> -->
+      <div *ngIf="!showReviewsFlag" fxLayout="column">
+        <h2>{{paper.title}}</h2>
+        <p>{{paper.authors}}</p>
+        <p>{{paper.abstract}}</p>
+        <div fxLayout="row wrap" fxLayoutGap="1em">
+          <button *ngFor="let keyword of paper.keywords" mat-button color="primary">{{keyword}}</button>
+        </div>
+      </div>
+
+      <h2 *ngIf="showReviewsFlag">Reviews</h2>
+      <div *ngIf="showReviewsFlag" style="height: 32em; overflow-y:scroll; scroll-behavior: smooth;" fxLayout="column" fxLayoutGap="1em" fxLayoutAlign="start center">
+        <mat-card *ngFor="let review of reviews">
+          <mat-card-content>
+            <h4><b>"{{review.title}}"</b></h4>
+            <p>{{review.review}}</p>
+            
+            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+              <p><b>{{review.reviewerId}}</b></p>
+              <p style="color:greenyellow"><b>{{review.reviewerReputation}} ℜ</b></p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-card-content>
+  <mat-card-actions>
+    <div style="padding-top:1em;" fxLayout="row" fxLayoutGap="1em">
+      <button *ngIf="!showReviewsFlag" mat-raised-button (click)="showReviewsFlag = !showReviewsFlag" color="secondary">Read Reviews</button>
+      <button *ngIf="showReviewsFlag" mat-raised-button (click)="showReviewsFlag = !showReviewsFlag" color="secondary">Back</button>
+      
+      <button mat-raised-button (click)="reviewPaper()" color="primary">Review</button>
+    </div>
+  </mat-card-actions>
+  </mat-card>
+  
+  <pdf-viewer [src]="pdfSrc"
+              [render-text]="false"
+              [original-size]="false"
+              [autoresize]="true"
+              style="width: 50%; height: 600px;"
+  ></pdf-viewer>
+</div>

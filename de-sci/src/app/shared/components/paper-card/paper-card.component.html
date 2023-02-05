@@ -12,8 +12,8 @@
 
     <div fxFlex="15" fxLayout="column" fxLayoutGap="1em" fxLayoutAlign="center">
       <h3>{{reputation}} &#8476;</h3>
-      <button mat-raised-button [routerLink]="'paper/' + paper.id" color="primary">Review</button>
-      <button mat-raised-button color="secondary">Read More</button>
+      <button *ngIf="reviewEnabled" mat-raised-button (click)="reviewPaper(paper.id)" color="primary">Review</button>
+      <button mat-raised-button [routerLink]="'/paper/' + paper.id" color="secondary">Read More</button>
     </div>
   </mat-card-content>
 </mat-card>

@@ -38,8 +38,4 @@ export class HomeComponent {
       2: 50
     }
   }
-
-  reviewPaper() {
-
-  }
 }

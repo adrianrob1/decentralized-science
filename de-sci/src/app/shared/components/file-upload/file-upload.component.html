@@ -1,0 +1,13 @@
+<input ngDefaultControl type="file" accept=".pdf" class="file-input"
+      (change)="onFileSelected($event)" #fileUpload>
+
+<div fxLayoutGap="1em" fxLayout="row" fxLayoutAlign="start center" class="file-upload">
+  <button mat-mini-fab color="accent" class="upload-btn"
+    (click)="fileUpload.click()">
+      <mat-icon>attach_file</mat-icon>
+  </button>
+
+  <p>
+    {{filename || "No file uploaded yet."}}
+  </p>
+</div>

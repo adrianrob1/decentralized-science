@@ -6,3 +6,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 mat-card {
   padding: 1.5em;
 }
+
+.page-header {
+  padding: 2em 10% 1em 10%; 
+  margin: 0;
+}
+
+.page-header h1 {
+  margin: 0;
+}

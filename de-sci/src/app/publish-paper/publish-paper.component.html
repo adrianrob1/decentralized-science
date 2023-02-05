@@ -1,1 +1,79 @@
-<p>publish-paper works!</p>
+<!-- Publish page -->
+
+<div class="page-header">
+  <h1>Publish</h1>
+</div>
+
+<div class="page-container" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2em">
+  <mat-card>
+    <mat-card-content>
+      <!-- <img style="height: 200px" src="assets/images/placeholder.jpg" alt="placeholder"> -->
+      <form [formGroup]="form" fxLayout="column">
+        <mat-form-field appearance="outline">
+          <mat-label>Title</mat-label>
+          <input formControlName="title" matInput type="text" placeholder="Ex. A Modern Self-Referential Weight Matrix That Learns to Modify Itself" value="">
+          <button *ngIf="form.get('title')?.value" matSuffix mat-icon-button aria-label="Clear" (click)="form.patchValue({'title': ''})">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Authors</mat-label>
+          <input formControlName="authors" matInput type="text" placeholder="Ex. Kazuki Irie, Imanol Schlag, Róbert Csordás, Jürgen Schmidhuber" value="">
+          <button *ngIf="form.get('authors')?.value" matSuffix mat-icon-button aria-label="Clear" (click)="form.patchValue({'authors': ''})">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>DOI</mat-label>
+          <input formControlName="doi" matInput type="text" placeholder="Ex. 	arXiv:2202.05780" value="">
+          <button *ngIf="form.get('doi')?.value" matSuffix mat-icon-button aria-label="Clear" (click)="form.patchValue({'doi': ''})">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Keywords</mat-label>
+          <mat-chip-grid #chipGrid aria-label="Enter keywords">
+            <mat-chip-row *ngFor="let keyword of this.form.get('keywords')?.value"
+                          (removed)="remove(keyword)"
+                          [editable]="true"
+                          (edited)="edit(keyword, $event)"
+                          [aria-description]="'press enter to edit ' + keyword.name">
+              {{keyword.name}}
+              <button matChipRemove [attr.aria-label]="'remove ' + keyword.name">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <input  placeholder="New Keyword..."
+                    [matChipInputFor]="chipGrid"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="add($event)"/>
+          </mat-chip-grid>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Abstract</mat-label>
+          <textarea formControlName="abstract" matInput type="text" placeholder="Ex. The weight matrix (WM) of a neural network (NN) is its program. The programs of many traditional NNs..." value="">
+          </textarea>
+          <button *ngIf="form.get('abstract')?.value" matSuffix mat-icon-button aria-label="Clear" (click)="form.patchValue({'abstract': ''})">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <app-file-upload [formGroup]="form" name="paperPdf"></app-file-upload>
+
+        <button  fxFlexOffset="1em" mat-raised-button color="primary" (click)="log()">Submit</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  
+  <pdf-viewer [src]="pdfSrc"
+              [render-text]="false"
+              [original-size]="false"
+              [autoresize]="true"
+              style="width: 50%; height: 600px;"
+  ></pdf-viewer>
+</div>
