@@ -13,6 +13,16 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "pdfjs-dist/build/pdf",
+              "pdfjs-dist/web/pdf_viewer",
+              "any-signal",
+              "ipfs-utils/src/files/url-source.js",
+              "stream-to-it/source.js",
+              "err-code",
+              "debug",
+              "web3"
+            ],
             "outputPath": "dist/de-sci",
             "index": "src/index.html",
             "main": "src/main.ts",

@@ -12,9 +12,9 @@
     </button>
 
     <mat-menu fxLayout="column" fxLayoutAlign="center" #menu="matMenu">
-      <h3>Tokens: {{userTokens}}</h3>
-      <h3>Papers: {{numPapers}}</h3>
-      <button mat-menu-item [class]="'logout'">Logout</button>
+      <h3>Tokens: {{web3Service.reputation}}</h3>
+      <h3>Papers: {{web3Service.paperCount}}</h3>
+      <button mat-menu-item (click)="login()" *ngIf="!loggedIn" [class]="'login'">Connect</button>
     </mat-menu>
   </div>
 
