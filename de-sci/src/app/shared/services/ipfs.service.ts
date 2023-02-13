@@ -27,9 +27,27 @@ export class IpfsService {
       console.log("IPFS node ID: " + id.id);
     });
 
-    this.web3Service.infoRepo.subscribe((infoRepo: string) => {
+    // update papers info every 1 minute
+    // but if there are no papers, try to update every 3 seconds
+    let int = setInterval(() => {
       this.updatePapersInfo();
+
+      if(this._papersInfo.value.length > 0) {
+        clearInterval(int);
+        int = setInterval(() => {
+          this.updatePapersInfo();
+        }, 1000 * 60 * 1);
+      }
+    }, 1000 * 3);
+
+    this._client.files.mkdir('/info', { parents: true, flush: true }).then( () => {
+      console.log("Created info directory");
     });
+
+    this._client.files.mkdir('/reviews', { parents: true, flush: true }).then(() => {
+      console.log("Created reviews directory");
+    }
+    );
   }
 
   async updatePapersInfo() {
@@ -59,6 +77,18 @@ export class IpfsService {
 
         // then we need to add the file
         return await this._client.files.write('/' + this.web3Service.accounts[0].slice(2, -1) + '/' + localFilePath, file, { create:true, parents: true, flush: true, progress: progress });
+      });
+    }
+  }
+
+  async addReview(paperCid: string, fileName: string, file: any, progress: any = null) {
+    if(this._client && this.web3Service.loggedIn) {
+      // return this._client.files.write('/' + this.web3Service.accounts[0].slice(2, -1) + '/' + file.name, file, { create:true, parents: true });
+      // first we need to create the directory
+      return await this._client.files.mkdir('/reviews/' + paperCid, { parents: true, flush: true }).then(async () => {
+
+        // then we need to add the file
+        return await this._client.files.write('/reviews/' + paperCid + '/' + fileName, file, { create:true, parents: true, flush: true, progress: progress });
       });
     }
   }
@@ -115,6 +145,9 @@ export class IpfsService {
 
   async getPapersInfoList() {
     const results: any[] = [];
+
+    if(!this.paperInfoRepo)
+      return results;
 
     console.log("Getting papers info list from: ", this.paperInfoRepo)
     for await (let resPart of this._client.ls('/ipfs/' + this.paperInfoRepo)) {

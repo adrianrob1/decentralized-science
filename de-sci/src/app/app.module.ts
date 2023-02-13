@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatChipsModule } from '@angular/material/chips';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
@@ -56,7 +57,8 @@ import { IpfsService } from './shared/services/ipfs.service';
     MatInputModule,
     MatChipsModule,
     PdfViewerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonToggleModule
   ],
   providers: [
     Web3Service,

@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PublishReviewDialog } from 'src/app/publish-review/publish-review.component';
 import { IpfsService } from '../shared/services/ipfs.service';
 import { ActivatedRoute } from '@angular/router';
+import { Web3Service } from '../shared/services/web3.service';
 
 @Component({
   selector: 'app-paper-detail',
@@ -18,24 +19,21 @@ export class PaperDetailComponent {
   pdfSrc: any = '';
 
   reviews: Review[] = [{
-    id: 1,
-    paperId: 1,
+    paperId: '1',
     reviewerId: 1,
     review: 'This paper is very interesting and I would like to see it published.',
     title: 'Very interesting',
     reviewerReputation: 120
   },
   {
-    id: 1,
-    paperId: 1,
+    paperId: '1',
     reviewerId: 1,
     review: 'This paper is very interesting and I would like to see it published.',
     title: 'Very interesting',
     reviewerReputation: 120
   },
   {
-    id: 1,
-    paperId: 1,
+    paperId: '1',
     reviewerId: 1,
     review: 'This paper is very interesting and I would like to see it published.',
     title: 'Very interesting',
@@ -44,9 +42,9 @@ export class PaperDetailComponent {
 
 ];
 
-  paperId = 1;
+  paperId = '1';
 
-  constructor(private dialog: MatDialog, private ipfsService: IpfsService, private activatedRoute: ActivatedRoute) {
+  constructor(private dialog: MatDialog, private ipfsService: IpfsService, private activatedRoute: ActivatedRoute, private web3Service: Web3Service) {
     this.activatedRoute.params.subscribe(params => {
       // retrieve paper info from IPFS using params.id
       // this.ipfsService.getData('/ipfs/' + params['id']).then((paperInfo: any) => {
@@ -74,7 +72,11 @@ export class PaperDetailComponent {
   }
 
   reviewPaper(): void {
-    const data: Review = {paperId: this.paperId};
+    const data: Review = {
+      paperId: this.paperId, 
+      reviewerId: this.web3Service.accounts[0], 
+      reviewerReputation: this.web3Service.reputation
+    };
     const dialogRef = this.dialog.open(PublishReviewDialog, {
       data: data,
     });

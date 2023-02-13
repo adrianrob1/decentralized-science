@@ -17,8 +17,7 @@ export class Web3Service {
   private _paperCount = 0;
   private lastEvents: any = {};
 
-  private _infoRepo = new BehaviorSubject('');
-  public readonly infoRepo = this._infoRepo.asObservable();
+  public infoRepo = '';
 
   private logTx = (txID: any) => console.log("Transaction tx: ", txID);
 
@@ -64,7 +63,7 @@ export class Web3Service {
         const isRelatedToUser = this._accounts && event.returnValues.addrUser?.toLowerCase() == this._accounts[0].toLowerCase();
 
         if(event.event == "PapersInfo")
-          this._infoRepo.next(event.returnValues.papersInfoCid);
+          this.infoRepo = event.returnValues.papersInfoCid;
 
         if(isRelatedToUser) {
           switch(event.event) {
@@ -124,8 +123,12 @@ export class Web3Service {
     return this._accounts;
   }
 
-  publishPaperBC(paperCid: string, repositoryCid: string, infoCid: string) {
-    this._contract.methods.addPaper(paperCid, repositoryCid, infoCid).send({ from: this._accounts[0], gas : 1000000 }).then(this.logTx);
+  async publishPaperBC(paperCid: string, repositoryCid: string, infoCid: string) {
+    return await this._contract.methods.addPaper(paperCid, repositoryCid, infoCid).send({ from: this._accounts[0], gas : 1000000 }).then(this.logTx);
+  }
+
+  async addReview(paperCid: string, reviewCid: string, isPositive: boolean) {
+    return await this._contract.methods.addReview(paperCid, reviewCid, isPositive).send({ from: this._accounts[0], gas : 1000000 }).then(this.logTx);
   }
 
   getReputationAndPaperCount() {

@@ -1,8 +1,8 @@
 export interface Review {
-  id?: number;
-  paperId: number;
+  paperId?: string;
   reviewerId?: number;
   reviewerReputation?: number;
   review?: string;
   title?: string;
+  isPositive?: boolean;
 }

@@ -1,5 +1,5 @@
 export interface PaperDetails {
-  id: number;
+  cid: number;
   title?: string | null;
   authors?: string | null;
   abstract?: string | null;

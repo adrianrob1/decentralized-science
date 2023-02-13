@@ -1,9 +1,8 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { PublishReviewDialog } from 'src/app/publish-review/publish-review.component';
-import { PaperDetails } from '../../model/paper-details';
 import { MatDialog } from '@angular/material/dialog';
 import { Review } from '../../model/review';
-import { CID } from 'ipfs-http-client';
+import { Web3Service } from '../../services/web3.service';
 
 @Component({
   selector: 'app-paper-card',
@@ -22,7 +21,7 @@ export class PaperCardComponent {
 
   @Input() reputation: number = 0;
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private web3Service: Web3Service) {}
 
   ngOnInit() {
     this.maxTextLength = window.innerWidth < 900 ? 80 : 200;
@@ -47,8 +46,15 @@ export class PaperCardComponent {
     this.maxKeywords = window.innerWidth < 600 ? 1 : this.maxKeywords;
   }
 
-  reviewPaper(paperId: number): void {
-    const data: Review = {paperId: paperId};
+  reviewPaper(paperId: string): void {
+    const data: Review = {
+      paperId: paperId, 
+      reviewerId: this.web3Service.accounts[0], 
+      reviewerReputation: this.web3Service.reputation
+    };
+
+    console.log("Review data: ", data);
+
     const dialogRef = this.dialog.open(PublishReviewDialog, {
       data: data,
     });
