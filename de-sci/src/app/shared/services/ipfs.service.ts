@@ -124,6 +124,20 @@ export class IpfsService {
     return new File([fileBuffer], path, { type: "application/pdf" });
   }
 
+  async getReviews(paperCid: string) {
+    const results: any[] = [];
+
+    console.log("Getting reviews for paper: ", paperCid)
+    console.log("Reviews path: ", '/reviews/' + paperCid)
+    for await (let file of this._client.files.ls('/reviews/' + paperCid)) {
+      const data = await toBuffer(this._client.files.read('/reviews/' + paperCid + '/' + file.name));
+      const json = JSON.parse(new TextDecoder().decode(data));
+      results.push(json);
+    }
+
+    return results;
+  }
+
   async getData(path: string) {
     let fileBuffer = await toBuffer(this._client.files.read(path));
 

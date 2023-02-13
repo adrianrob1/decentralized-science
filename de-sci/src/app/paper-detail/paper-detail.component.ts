@@ -18,31 +18,9 @@ export class PaperDetailComponent {
 
   pdfSrc: any = '';
 
-  reviews: Review[] = [{
-    paperId: '1',
-    reviewerId: 1,
-    review: 'This paper is very interesting and I would like to see it published.',
-    title: 'Very interesting',
-    reviewerReputation: 120
-  },
-  {
-    paperId: '1',
-    reviewerId: 1,
-    review: 'This paper is very interesting and I would like to see it published.',
-    title: 'Very interesting',
-    reviewerReputation: 120
-  },
-  {
-    paperId: '1',
-    reviewerId: 1,
-    review: 'This paper is very interesting and I would like to see it published.',
-    title: 'Very interesting',
-    reviewerReputation: 120
-  }
+  reviews: Review[] = [];
 
-];
-
-  paperId = '1';
+  paperId = '';
 
   constructor(private dialog: MatDialog, private ipfsService: IpfsService, private activatedRoute: ActivatedRoute, private web3Service: Web3Service) {
     this.activatedRoute.params.subscribe(params => {
@@ -63,6 +41,14 @@ export class PaperDetailComponent {
           authors : paperInfo.authors,
           keywords : paperInfo.keywords
         };
+
+        this.paperId = paperInfo.cid;
+
+        // retrieve reviews
+        this.ipfsService.getReviews(params['id']).then((reviews: any) => {
+          console.log("Reviews: ", reviews);
+          this.reviews = reviews;
+        });
 
         this.ipfsService.getData('/ipfs/' + paperInfo.cid).then((paperInfo: any) => {
           this.pdfSrc = {data: paperInfo};
