@@ -19,7 +19,7 @@ export class HeaderComponent {
       this.loggedIn = this.web3Service.loggedIn;
 
       // Get user tokens and number of papers
-      this.web3Service.getReputationAndPaperCount();
+      // this.web3Service.getReputationAndPaperCount();
     });
   }
 }

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { isObservable } from 'rxjs';
 import Web3 from 'web3';
 import contractData from '../../../assets/contracts/DeSciContract.json';
+import { CID } from 'ipfs-http-client';
+import { IpfsService } from './ipfs.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +17,7 @@ export class Web3Service {
   loggedIn: boolean;
   private _reputation = 0;
   private _paperCount = 0;
+  private lastEvents: any = {};
 
   private logTx = (txID: any) => console.log("Transaction tx: ", txID);
 
@@ -32,6 +35,7 @@ export class Web3Service {
     console.log("Contract: ", this._contract);
 
     this.loggedIn = this._accounts && this._accounts.length > 0;
+    this.logEvents();
   }
 
   get web3(): any {
@@ -51,22 +55,10 @@ export class Web3Service {
     this._contract.events.allEvents({ fromBlock: 0 },  (error: any, event: any) => {
       if(error)
         console.log("Error: ", error);
-      else{
-        console.log("Event: ", event);
+      else {
+        //console.log("Event: ", event);
 
-        if(!this.loggedIn)
-          return;
-
-        const isRelatedToUser = event.returnValues.addrUser?.toLowerCase() == this._accounts[0].toLowerCase();
-
-        if(event.event == "UserReputation" && isRelatedToUser){
-          this._reputation = event.returnValues.reputation;}
-        else if (event.event == "ReputationChanged" && isRelatedToUser)
-          this._reputation = event.returnValues.reputation;
-        else if(event.event == "PaperCount" && isRelatedToUser)
-          this._paperCount = event.returnValues.count;
-        else if (event.event == "PaperCountChanged" && isRelatedToUser)
-          this._paperCount = event.returnValues.count;
+        this.lastEvents[event.event] = event;
       }
     });
   }
@@ -79,7 +71,30 @@ export class Web3Service {
       this.loggedIn = this._accounts && this._accounts.length > 0;
       console.log("Accounts: ", accounts);
 
-      this.logEvents();
+      if(!this.loggedIn)
+          return;
+
+      console.log("Getting user data from events: ", this.lastEvents);
+
+      Object.values(this.lastEvents).forEach((event: any) => {
+        const isRelatedToUser = event.returnValues.addrUser?.toLowerCase() == this._accounts[0].toLowerCase();
+
+        if(isRelatedToUser) {
+          switch(event.event) {
+            case "UserReputation":
+              this._reputation = event.returnValues.reputation;
+              break;
+            case "ReputationChanged":
+              this._reputation = event.returnValues.reputation;
+              break;
+            case "PaperCount":
+              this._paperCount = event.returnValues.count;
+              break;
+            case "PaperCountChanged":
+              this._paperCount = event.returnValues.count;
+        }}
+      }
+      );
     });
   }
 
@@ -87,8 +102,8 @@ export class Web3Service {
     return this._accounts;
   }
 
-  publishPaperBC(cid: string) {
-    this._contract.methods.addPaper(cid).send({ from: this._accounts[0], gas : 1000000 }).then(this.logTx);
+  publishPaperBC(paperCid: string, repositoryCid: string, infoCid: string) {
+    this._contract.methods.addPaper(paperCid, repositoryCid, infoCid).send({ from: this._accounts[0], gas : 1000000 }).then(this.logTx);
   }
 
   getReputationAndPaperCount() {
@@ -105,5 +120,9 @@ export class Web3Service {
 
   getPaperCount() {
     this._contract.methods.getPaperCount().send({ from: this._accounts[0] }).then(this.logTx);
+  }
+
+  getLastEvent(eventName: any) {
+    return this.lastEvents[eventName];
   }
 }

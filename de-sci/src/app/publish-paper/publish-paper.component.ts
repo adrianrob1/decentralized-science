@@ -3,9 +3,10 @@ import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatChipEditedEvent, MatChipInputEvent, MAT_CHIPS_DEFAULT_OPTIONS} from '@angular/material/chips';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileSizeValidator } from '../shared/utils';
-import { AddResult, IpfsService } from '../shared/services/ipfs.service';
-import { PaperDetails, PaperDetailsDTO } from '../shared/model/paper-details';
+import { IpfsService } from '../shared/services/ipfs.service';
 import { Web3Service } from '../shared/services/web3.service';
+import {Md5} from 'ts-md5';
+import { PaperDetailsDTO } from '../shared/model/paper-details';
 
 export interface Keyword {
   name: string;
@@ -51,28 +52,62 @@ export class PublishPaperComponent {
   }
 
   loadFile() {
-    console.log("Loading PDF:", this.paperFile);
-    this.ipfsService.addFile(this.form.get('paperPdf')?.value, {
+    const paperFl = this.form.get('paperPdf')?.value;
+    console.log("Loading PDF:", paperFl);
+
+    if(!paperFl)
+      return;
+
+    const hashFile = Md5.hashStr(paperFl.name +paperFl.lastModified +paperFl.size);
+
+    console.log("Sending file to IPFS, hash: ", hashFile)
+
+    this.ipfsService.addFile('papers/' + hashFile, paperFl, {
       progress: (prog: any) => console.log("received: ", prog)
-    })?.then((result: AddResult) => {
-      console.log("Loading PDF result: ", result);
+    })?.then(() => {
+      console.log("File added to IPFS");
 
-      const paperInfo: PaperDetailsDTO = {
-        title: this.form.get('title')?.value,
-        abstract: this.form.get('abstract')?.value,
-        authors: this.form.get('authors')?.value,
-        doi: this.form.get('doi')?.value,
-        id: result.cid.bytes,
-      };
+      // now we want to find the hash of the file
+      console.log("Getting dir contents...")
+      
+      this.ipfsService.getUserFiles('papers')?.then((authorPapersDir: any) => {
+        console.log("Dir contents: ", authorPapersDir);
 
-      paperInfo['keywords'] = this.form.get('keywords')?.value?.map((keyword: Keyword) => keyword.name);
+        const paperIpfsFile = authorPapersDir.filter((file: any) => file.name === hashFile)[0];
 
-      this.ipfsService.addFile(JSON.stringify(paperInfo), {
-        progress: (prog: any) => console.log("received: ", prog)
-      })?.then((result: AddResult) => {
-        console.log("Paper Details: ", result);
-        
-        this.web3Service.publishPaperBC(result.cid.toString());
+        console.log("File: ", paperIpfsFile);
+
+        // get dir hash
+        this.ipfsService.getIpfsHash('/' + this.web3Service.accounts[0].slice(2, -1) + '/')?.then((authorPapersDirCID: any) => {
+          console.log("Dir hash: ", authorPapersDirCID);
+
+          const paperInfo: PaperDetailsDTO = {
+            title: this.form.get('title')?.value,
+            abstract: this.form.get('abstract')?.value,
+            authors: this.form.get('authors')?.value,
+            doi: this.form.get('doi')?.value,
+            cid: paperIpfsFile.cid.toString(),
+            filename: hashFile
+          };
+          paperInfo['keywords'] = this.form.get('keywords')?.value?.map((keyword: Keyword) => keyword.name);
+
+          // save paper info to IPFS
+
+          this.ipfsService.addInfoFile('/info/' + hashFile, JSON.stringify(paperInfo))?.then(() => { 
+            console.log("Paper info added to IPFS")
+
+            // find paper info directory cid
+
+            this.ipfsService.getIpfsHash('/info/')?.then((resultInfo: any) => {
+              console.log("New paper Info dir cid: ", resultInfo.cid.toString());
+
+              // publish to blockchain
+
+              this.web3Service.publishPaperBC(paperIpfsFile.cid.toString(), authorPapersDirCID, resultInfo.cid.toString());
+            });
+
+          });
+        });
       });
     });
   }

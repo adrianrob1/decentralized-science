@@ -10,7 +10,8 @@ export interface PaperDetails {
 }
 
 export interface PaperDetailsDTO {
-  id: any;
+  cid: any;
+  filename: string;
   title?: string | null;
   authors?: string | null;
   abstract?: string | null;

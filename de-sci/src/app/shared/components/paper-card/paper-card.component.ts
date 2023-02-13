@@ -3,6 +3,7 @@ import { PublishReviewDialog } from 'src/app/publish-review/publish-review.compo
 import { PaperDetails } from '../../model/paper-details';
 import { MatDialog } from '@angular/material/dialog';
 import { Review } from '../../model/review';
+import { CID } from 'ipfs-http-client';
 
 @Component({
   selector: 'app-paper-card',
@@ -17,15 +18,7 @@ export class PaperCardComponent {
   @Input()
   reviewEnabled = true;
 
-  @Input() paper: PaperDetails = {
-    id: 0,
-    title: "No title",
-    authors: "No authors",
-    abstract: "No abstract",
-    keywords: [],
-    date: "No date",
-    doi: "No DOI"
-  };
+  @Input() paper: any;
 
   @Input() reputation: number = 0;
 
@@ -39,6 +32,8 @@ export class PaperCardComponent {
 
     this.maxKeywords = window.innerWidth < 900 ? 2 : 5;
     this.maxKeywords = window.innerWidth < 600 ? 1 : this.maxKeywords;
+
+    console.log("Paper card: ", this.paper);
   }
 
   @HostListener('window:resize', ['$event'])

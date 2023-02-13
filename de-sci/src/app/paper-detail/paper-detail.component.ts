@@ -3,6 +3,8 @@ import { Review } from '../shared/model/review';
 import { MatDialog } from '@angular/material/dialog';
 import { PublishReviewDialog } from 'src/app/publish-review/publish-review.component';
 import { PaperDetails } from '../shared/model/paper-details';
+import { IpfsService } from '../shared/services/ipfs.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-paper-detail',
@@ -52,7 +54,9 @@ export class PaperDetailComponent {
 
   paperId = 1;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) {
+    
+  }
 
   reviewPaper(): void {
     const data: Review = {paperId: this.paperId};
