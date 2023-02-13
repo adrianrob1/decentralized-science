@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PaperDetails } from '../shared/model/paper-details';
-import { PaperReputation } from '../shared/model/PaperReputation';
+import { PaperReputations } from '../shared/model/PaperReputation';
 
 @Component({
   selector: 'app-my-papers',
@@ -20,7 +20,7 @@ export class MyPapersComponent {
     },
   ];
 
-  paperReputation: PaperReputation = {
+  paperReputation: PaperReputations = {
     1: 100
   }
 }

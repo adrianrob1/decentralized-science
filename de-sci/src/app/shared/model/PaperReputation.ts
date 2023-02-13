@@ -1,3 +1,3 @@
-export interface PaperReputation {
+export interface PaperReputations {
   [id: number]: number
 }

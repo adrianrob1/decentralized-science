@@ -48,6 +48,12 @@ export class PaperDetailComponent {
         this.ipfsService.getReviews(params['id']).then((reviews: any) => {
           console.log("Reviews: ", reviews);
           this.reviews = reviews;
+        }).catch((err: any) => {
+          // check if error is http not found
+          if (err.response.status === 500) {
+            console.log("No reviews found");
+          } else
+            console.log("Error: ", err);
         });
 
         this.ipfsService.getData('/ipfs/' + paperInfo.cid).then((paperInfo: any) => {

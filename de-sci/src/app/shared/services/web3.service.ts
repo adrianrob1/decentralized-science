@@ -16,6 +16,8 @@ export class Web3Service {
   private _reputation = 0;
   private _paperCount = 0;
   private lastEvents: any = {};
+  
+  public paperReputations: any = {};
 
   public infoRepo = '';
 
@@ -27,7 +29,7 @@ export class Web3Service {
       this._ethereum = window.ethereum;
     }
     
-    this._web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8000"));
+    this._web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:7546"));
 
     // get contract from assets folder
     console.log("Getting contract...")
@@ -64,6 +66,11 @@ export class Web3Service {
 
         if(event.event == "PapersInfo")
           this.infoRepo = event.returnValues.papersInfoCid;
+
+        if(event.event == "PaperReputation") {
+          console.log("Paper reputation: ", event.returnValues.ipfsCid, event.returnValues.reputation)
+          this.paperReputations[event.returnValues.ipfsCid] = event.returnValues.reputation;
+        }
 
         if(isRelatedToUser) {
           switch(event.event) {

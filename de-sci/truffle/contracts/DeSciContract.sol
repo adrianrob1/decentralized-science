@@ -10,10 +10,10 @@ contract DeSciContract {
     // ----------------- DATA -----------------
 
     mapping (address => uint) public userPaperCount;
-    mapping (address => uint) public userReputations;
+    mapping (address => int) public userReputations;
     mapping (address => string) public userPapersRepo;
 
-    mapping (string => uint) public paperReputations;
+    mapping (string => int) public paperReputations;
     mapping (string => address) public paperAuthors;
     
     // we have a directory with a metadata file for each paper
@@ -24,8 +24,8 @@ contract DeSciContract {
     string public papersReviewsCid;
 
     event PaperAdded(address addrAuthor, string ipfsCid);
-    event UserReputation(address addrUser, uint reputation);
-    event PaperReputation(string ipfsCid, uint reputation);
+    event UserReputation(address addrUser, int reputation);
+    event PaperReputation(string ipfsCid, int reputation);
     event PaperCount(address addrUser, uint count);
     event UserRepository(address addrUser, string papersRepo);
     event PapersInfo(string papersInfoCid);
@@ -38,7 +38,7 @@ contract DeSciContract {
     function addPaper(string calldata paperCid, string calldata repoCid, string calldata papersInfoDirCid) public {
         // use the hash of the ipfsCid as the paper address
         // use the reputation of the author as the paper reputation
-        paperReputations[paperCid] = userReputations[msg.sender];
+        paperReputations[paperCid] = int256(userReputations[msg.sender]);
         userPapersRepo[msg.sender] = repoCid;
 
         // hash ipfsCid to get the paper address
@@ -63,7 +63,7 @@ contract DeSciContract {
         // TODO: check if the user is the author of the paper
 
         // get reputation of the reviewer
-        uint reputation = userReputations[msg.sender];
+        int reputation = userReputations[msg.sender];
 
         if(isPositive) {
             // increase the paper reputation

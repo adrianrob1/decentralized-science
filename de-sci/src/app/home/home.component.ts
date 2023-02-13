@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PaperDetails } from '../shared/model/paper-details';
-import { PaperReputation } from '../shared/model/PaperReputation';
+import { PaperReputations } from '../shared/model/PaperReputation';
 import { IpfsService } from '../shared/services/ipfs.service';
 import { Web3Service } from '../shared/services/web3.service';
 
@@ -11,14 +11,10 @@ import { Web3Service } from '../shared/services/web3.service';
 })
 export class HomeComponent {
   papers: PaperDetails[];
-  paperReputation: PaperReputation;
+  paperReputations: PaperReputations;
 
   constructor(private web3Service: Web3Service, private ipfsService: IpfsService) {
     this.papers = [];
-
-    this.paperReputation = {
-      1: 100
-    }
 
     console.log("Reading papers info...")
     this.ipfsService.papersInfo.subscribe((papersInfo: any[]) => {
@@ -26,5 +22,6 @@ export class HomeComponent {
       this.papers = papersInfo;
     });
 
+    this.paperReputations = web3Service.paperReputations;
   }
 }

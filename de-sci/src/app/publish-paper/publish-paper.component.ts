@@ -62,7 +62,7 @@ export class PublishPaperComponent {
 
     console.log("Sending file to IPFS, hash: ", hashFile)
 
-    this.ipfsService.addFile('papers/' + hashFile, paperFl, {
+    this.ipfsService.addFile(hashFile, paperFl, {
       progress: (prog: any) => console.log("received: ", prog)
     })?.then(() => {
       console.log("File added to IPFS");
@@ -70,7 +70,7 @@ export class PublishPaperComponent {
       // now we want to find the hash of the file
       console.log("Getting dir contents...")
       
-      this.ipfsService.getUserFiles('papers')?.then((authorPapersDir: any) => {
+      this.ipfsService.getUserFiles()?.then((authorPapersDir: any) => {
         console.log("Dir contents: ", authorPapersDir);
 
         const paperIpfsFile = authorPapersDir.filter((file: any) => file.name === hashFile)[0];

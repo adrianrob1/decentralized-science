@@ -73,11 +73,11 @@ export class IpfsService {
     if(this._client && this.web3Service.loggedIn) {
       // return this._client.files.write('/' + this.web3Service.accounts[0].slice(2, -1) + '/' + file.name, file, { create:true, parents: true });
       // first we need to create the directory
-      return await this._client.files.mkdir('/' + this.web3Service.accounts[0].slice(2, -1), { parents: true, flush: true }).then(async () => {
+      await this._client.files.mkdir('/' + this.web3Service.accounts[0].slice(2, -1), { parents: true, flush: true });
+      console.log("Created directory...")
 
-        // then we need to add the file
-        return await this._client.files.write('/' + this.web3Service.accounts[0].slice(2, -1) + '/' + localFilePath, file, { create:true, parents: true, flush: true, progress: progress });
-      });
+      // then we need to add the file
+      return this._client.files.write('/' + this.web3Service.accounts[0].slice(2, -1) + '/' + localFilePath, file, { create:true, parents: true, flush: true, progress: progress });
     }
   }
 
@@ -144,13 +144,13 @@ export class IpfsService {
     return fileBuffer;
   }
 
-  async getUserFiles(localPath: string) {
+  async getUserFiles() {
     if(!this.web3Service.loggedIn || !this.web3Service.accounts[0])
       return null;
 
     const results: any[] = [];
 
-    for await (let resPart of this._client.files.ls('/' + this.web3Service.accounts[0].slice(2, -1) + '/' + localPath)) {
+    for await (let resPart of this._client.files.ls('/' + this.web3Service.accounts[0].slice(2, -1))) {
       results.push(resPart);
     }
 
@@ -179,6 +179,7 @@ export class IpfsService {
     console.log("Info files: ", infoFiles);
 
     for(let file of infoFiles) {
+      console.log("Reading file: ", file)
       let fileBuffer = await toBuffer(this._client.files.read(file.path));
 
       // parse byte array and push it to the results array
