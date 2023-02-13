@@ -8,7 +8,7 @@
         <mat-card-content style="padding-top: 0">
           <form [formGroup]="form" fxLayout="column">
             <div fxLayout="row">
-              <mat-button-toggle-group name="isPositive" aria-label="Rate">
+              <mat-button-toggle-group formControlName="isPositive" aria-label="Rate">
                 <mat-button-toggle [value]="true">Positive</mat-button-toggle>
                 <mat-button-toggle [value]="false">Negative</mat-button-toggle>
               </mat-button-toggle-group>
