@@ -23,7 +23,7 @@ export class PaperDetailComponent {
     keywords : ['Few-Shot Learning', 'Meta-Learning', 'Neural Networks', 'Self-Referential Neural Networks', 'Weight Programming']
   };
 
-  pdfSrc = 'https://arxiv.org/pdf/2202.05780.pdf';
+  pdfSrc: any = 'https://arxiv.org/pdf/2202.05780.pdf';
 
   reviews: Review[] = [{
     id: 1,
@@ -54,8 +54,31 @@ export class PaperDetailComponent {
 
   paperId = 1;
 
-  constructor(private dialog: MatDialog) {
-    
+  constructor(private dialog: MatDialog, private ipfsService: IpfsService, private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.params.subscribe(params => {
+      // retrieve paper info from IPFS using params.id
+      // this.ipfsService.getData('/ipfs/' + params['id']).then((paperInfo: any) => {
+      //   this.pdfSrc = {data: paperInfo};
+      // });
+
+      // retrieve paper info from IPFS using params.id
+      this.ipfsService.getPaperInfo(params['id']).then((paperInfo: any) => {
+        console.log(paperInfo);
+
+        this.paper = {
+          id: paperInfo.id,
+          doi : paperInfo.doi,
+          title : paperInfo.title,
+          abstract : paperInfo.abstract,
+          authors : paperInfo.authors,
+          keywords : paperInfo.keywords
+        };
+
+        this.ipfsService.getData('/ipfs/' + paperInfo.cid).then((paperInfo: any) => {
+          this.pdfSrc = {data: paperInfo};
+        });
+      });
+    });
   }
 
   reviewPaper(): void {

@@ -52,18 +52,25 @@ export class IpfsService {
     return await this._client.files.stat(path, { hash: true });
   }
 
-  getFile(hash: string) {
-    return this._client.files.read(hash);
+  async getPaperInfo(cid: string) {
+    let fileBuffer = await toBuffer(this._client.files.read('/ipfs/' + cid));
+
+      // parse byte array and push it to the results array
+    return JSON.parse(new TextDecoder().decode(fileBuffer));
+
+
   }
 
-  async readFiles(path: string) {
-    const results: any[] = [];
+  async getPdf(path: string) {
+    let fileBuffer = await toBuffer(this._client.files.read(path));
 
-    for await (let resPart of this._client.files.read(path)) {
-      results.push(resPart);
-    }
+    return new File([fileBuffer], path, { type: "application/pdf" });
+  }
 
-    return results;
+  async getData(path: string) {
+    let fileBuffer = await toBuffer(this._client.files.read(path));
+
+    return fileBuffer;
   }
 
   async getUserFiles(localPath: string) {
@@ -101,7 +108,9 @@ export class IpfsService {
       let fileBuffer = await toBuffer(this._client.files.read(file.path));
 
       // parse byte array and push it to the results array
-      results.push(JSON.parse(new TextDecoder().decode(fileBuffer)));
+      let paperInfo = JSON.parse(new TextDecoder().decode(fileBuffer))
+      paperInfo.cid = file.cid.toString();
+      results.push(paperInfo);
     }
 
     return results;

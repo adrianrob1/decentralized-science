@@ -27,7 +27,8 @@ export class HomeComponent {
         console.log("Papers info: ", papersInfo);
         this.papers = papersInfo.map(paperInfo => {
           return {
-            id: paperInfo.cid,
+            id: paperInfo.id,
+            cid: paperInfo.cid,
             title: paperInfo.title,
             authors: paperInfo.authors,
             abstract: paperInfo.abstract,
