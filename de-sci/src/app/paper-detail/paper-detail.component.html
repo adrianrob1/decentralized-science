@@ -6,11 +6,18 @@
 
 <div class="page-container" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="2em">
   <mat-card class="info-container">
+    <mat-card-header>
+      <mat-card-title>
+        <h2>{{paper.title}}</h2>
+      </mat-card-title>
+
+      <mat-card-subtitle>
+        <h3>{{paper.authors}}</h3>
+      </mat-card-subtitle>
+    </mat-card-header>
     <mat-card-content>
       <!-- <img style="height: 200px" src="assets/images/placeholder.jpg" alt="placeholder"> -->
       <div *ngIf="!showReviewsFlag" fxLayout="column">
-        <h2>{{paper.title}}</h2>
-        <p>{{paper.authors}}</p>
         <p>{{paper.abstract}}</p>
         <div fxLayout="row wrap" fxLayoutGap="1em">
           <button *ngFor="let keyword of paper.keywords" mat-button color="primary">{{keyword}}</button>

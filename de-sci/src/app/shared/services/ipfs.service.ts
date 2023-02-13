@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CID, create, IPFSHTTPClient } from 'ipfs-http-client'
 import { Web3Service } from './web3.service';
 import toBuffer from 'it-to-buffer'
+import { BehaviorSubject } from 'rxjs';
 
 
 @Injectable({
@@ -11,6 +12,9 @@ export class IpfsService {
 
   private _client: IPFSHTTPClient;
   private _paperInfoRepo: any;
+
+  private _papersInfo = new BehaviorSubject(<any[]>[]);
+  public readonly papersInfo = this._papersInfo.asObservable();
 
   constructor(private web3Service: Web3Service) {
     this._client = create({
@@ -22,7 +26,30 @@ export class IpfsService {
     this._client.id().then((id: any) => {
       console.log("IPFS node ID: " + id.id);
     });
+
+    this.web3Service.infoRepo.subscribe((infoRepo: string) => {
+      this.updatePapersInfo();
+    });
   }
+
+  async updatePapersInfo() {
+    return await this.readPapersInfo().then((papersInfo: any[]) => {
+      console.log("Papers info: ", papersInfo);
+      this._papersInfo.next( papersInfo.map(paperInfo => {
+        return {
+          id: paperInfo.id,
+          cid: paperInfo.cid,
+          title: paperInfo.title,
+          authors: paperInfo.authors,
+          abstract: paperInfo.abstract,
+          keywords: paperInfo.keywords,
+          date: paperInfo.date,
+          doi: paperInfo.doi
+          }
+        }) );
+    });
+  }
+
 
   async addFile(localFilePath: string, file: any, progress: any = null) {
     if(this._client && this.web3Service.loggedIn) {

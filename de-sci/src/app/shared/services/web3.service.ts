@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { isObservable } from 'rxjs';
 import Web3 from 'web3';
 import contractData from '../../../assets/contracts/DeSciContract.json';
-import { CID } from 'ipfs-http-client';
-import { IpfsService } from './ipfs.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +16,9 @@ export class Web3Service {
   private _reputation = 0;
   private _paperCount = 0;
   private lastEvents: any = {};
+
+  private _infoRepo = new BehaviorSubject('');
+  public readonly infoRepo = this._infoRepo.asObservable();
 
   private logTx = (txID: any) => console.log("Transaction tx: ", txID);
 
@@ -59,6 +60,27 @@ export class Web3Service {
         //console.log("Event: ", event);
 
         this.lastEvents[event.event] = event;
+        
+        const isRelatedToUser = this._accounts && event.returnValues.addrUser?.toLowerCase() == this._accounts[0].toLowerCase();
+
+        if(event.event == "PapersInfo")
+          this._infoRepo.next(event.returnValues.papersInfoCid);
+
+        if(isRelatedToUser) {
+          switch(event.event) {
+            case "UserReputation":
+              this._reputation = event.returnValues.reputation;
+              break;
+            case "ReputationChanged":
+              this._reputation = event.returnValues.reputation;
+              break;
+            case "PaperCount":
+              this._paperCount = event.returnValues.count;
+              break;
+            case "PaperCountChanged":
+              this._paperCount = event.returnValues.count;
+          }
+        }
       }
     });
   }
