@@ -1,12 +1,6 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 contract DeSciContract {
-
-    struct Review {
-        address reviewer;
-        bool isPositive;
-    }
-
     // ----------------- DATA -----------------
 
     mapping (address => uint) public userPaperCount;
