@@ -93,7 +93,7 @@ export class PublishPaperComponent {
 
           // save paper info to IPFS
 
-          this.ipfsService.addInfoFile('/info/' + hashFile, JSON.stringify(paperInfo))?.then(() => { 
+          this.ipfsService.addInfoFile('/info/' + hashFile, JSON.stringify(paperInfo))?.then((fileInfoCid: string | undefined) => { 
             console.log("Paper info added to IPFS")
 
             // find paper info directory cid
@@ -102,8 +102,10 @@ export class PublishPaperComponent {
               console.log("New paper Info dir cid: ", resultInfo.cid.toString());
 
               // publish to blockchain
-
-              this.web3Service.publishPaperBC(paperIpfsFile.cid.toString(), authorPapersDirCID, resultInfo.cid.toString());
+              if(fileInfoCid)
+                this.web3Service.publishPaperBC(fileInfoCid, authorPapersDirCID, resultInfo.cid.toString());
+              else
+                console.log("Error: file info cid is undefined");
             });
 
           });

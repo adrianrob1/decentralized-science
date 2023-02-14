@@ -33,7 +33,8 @@
             
             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
               <p><b>{{review.reviewerId}}</b></p>
-              <p style="color:greenyellow"><b>{{review.reviewerReputation}} ℜ</b></p>
+              <p *ngIf="review.isPositive" style="color:green"><b>{{review.reviewerReputation}} ℜ</b></p>
+              <p *ngIf="!review.isPositive" style="color:red"><b>{{review.reviewerReputation}} ℜ</b></p>
             </div>
           </mat-card-content>
         </mat-card>

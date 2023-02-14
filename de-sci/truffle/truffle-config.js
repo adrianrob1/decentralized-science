@@ -15,6 +15,16 @@ module.exports = {
       network_id: "*",
       port: 7546,
       host: "127.0.0.1"
+    },
+    loc_desciv2_desciv2: {
+      network_id: "*",
+      port: 7548,
+      host: "127.0.0.1"
+    },
+    loc_desciv3_desciv3: {
+      network_id: "*",
+      port: 7591,
+      host: "127.0.0.1"
     }
   },
   compilers: {

@@ -99,10 +99,15 @@ export class IpfsService {
       return await this._client.files.mkdir('/info', { parents: true, flush: true }).then(async () => {
         console.log("Created info directory...")
       
-        return await this._client.files.write('/' + filePath, file, { create:true, parents: true, flush: true, progress: progress });
-        
+        await this._client.files.write('/' + filePath, file, { create:true, parents: true, flush: true, progress: progress });
+
+        // get cid of the info file
+        let f = await this.getIpfsHash('/' + filePath);
+        console.log("Info file cid: ", f.cid.toString());
+        return f.cid.toString();
       });
     }
+    else return undefined;
   }
 
   async getIpfsHash(path: string) {
@@ -160,11 +165,8 @@ export class IpfsService {
   async getPapersInfoList() {
     const results: any[] = [];
 
-    if(!this.paperInfoRepo)
-      return results;
-
     console.log("Getting papers info list from: ", this.paperInfoRepo)
-    for await (let resPart of this._client.ls('/ipfs/' + this.paperInfoRepo)) {
+    for await (let resPart of this._client.files.ls('/info/')) {
       results.push(resPart);
     }
 
@@ -180,7 +182,7 @@ export class IpfsService {
 
     for(let file of infoFiles) {
       console.log("Reading file: ", file)
-      let fileBuffer = await toBuffer(this._client.files.read(file.path));
+      let fileBuffer = await toBuffer(this._client.files.read('/ipfs/' + file.cid.toString()));
 
       // parse byte array and push it to the results array
       let paperInfo = JSON.parse(new TextDecoder().decode(fileBuffer))

@@ -15,7 +15,7 @@ export class Web3Service {
   loggedIn: boolean;
   private _reputation = 0;
   private _paperCount = 0;
-  private lastEvents: any = {};
+  private pastEvents: any = {};
   
   public paperReputations: any = {};
 
@@ -29,7 +29,7 @@ export class Web3Service {
       this._ethereum = window.ethereum;
     }
     
-    this._web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:7546"));
+    this._web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:7591"));
 
     // get contract from assets folder
     console.log("Getting contract...")
@@ -60,7 +60,10 @@ export class Web3Service {
       else {
         //console.log("Event: ", event);
 
-        this.lastEvents[event.event] = event;
+        if(!this.pastEvents[event.event])
+          this.pastEvents[event.event] = [event];
+        else
+          this.pastEvents[event.event].push(event);
         
         const isRelatedToUser = this._accounts && event.returnValues.addrUser?.toLowerCase() == this._accounts[0].toLowerCase();
 
@@ -102,27 +105,31 @@ export class Web3Service {
       if(!this.loggedIn)
           return;
 
-      console.log("Getting user data from events: ", this.lastEvents);
+      console.log("Getting user data from events: ", this.pastEvents);
+      
+      Object.values(this.pastEvents).forEach((events: any) => {
 
-      Object.values(this.lastEvents).forEach((event: any) => {
-        const isRelatedToUser = event.returnValues.addrUser?.toLowerCase() == this._accounts[0].toLowerCase();
+        events.forEach((event: any) => {
 
-        if(isRelatedToUser) {
-          switch(event.event) {
-            case "UserReputation":
-              this._reputation = event.returnValues.reputation;
-              break;
-            case "ReputationChanged":
-              this._reputation = event.returnValues.reputation;
-              break;
-            case "PaperCount":
-              this._paperCount = event.returnValues.count;
-              break;
-            case "PaperCountChanged":
-              this._paperCount = event.returnValues.count;
-        }}
-      }
-      );
+          const isRelatedToUser = event.returnValues.addrUser?.toLowerCase() == this._accounts[0].toLowerCase();
+
+          if(isRelatedToUser) {
+            switch(event.event) {
+              case "UserReputation":
+                this._reputation = event.returnValues.reputation;
+                break;
+              case "ReputationChanged":
+                this._reputation = event.returnValues.reputation;
+                break;
+              case "PaperCount":
+                this._paperCount = event.returnValues.count;
+                break;
+              case "PaperCountChanged":
+                this._paperCount = event.returnValues.count;
+            }
+          }
+        })
+      });
     });
   }
 
@@ -155,6 +162,6 @@ export class Web3Service {
   }
 
   getLastEvent(eventName: any) {
-    return this.lastEvents[eventName];
+    return this.pastEvents[eventName];
   }
 }
