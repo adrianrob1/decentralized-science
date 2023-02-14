@@ -3,5 +3,5 @@
   <button mat-raised-button routerLink="/publish" color="primary" fxFlexOffset="1em">Publish</button>
 </div>
 <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1em">
-  <app-paper-card fxFill *ngFor="let paper of papers" [reviewEnabled]="false" [paper]="paper" [reputation]="paperReputation[paper.cid]"></app-paper-card>
+  <app-paper-card fxFill *ngFor="let paper of papers" [reviewEnabled]="false" [paper]="paper" [reputation]="paperReputations[paper.cid]"></app-paper-card>
 </div>

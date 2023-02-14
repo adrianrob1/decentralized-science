@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { PaperDetails } from '../shared/model/paper-details';
 import { PaperReputations } from '../shared/model/PaperReputation';
+import { IpfsService } from '../shared/services/ipfs.service';
+import { Web3Service } from '../shared/services/web3.service';
 
 @Component({
   selector: 'app-my-papers',
@@ -8,19 +10,23 @@ import { PaperReputations } from '../shared/model/PaperReputation';
   styleUrls: ['./my-papers.component.css']
 })
 export class MyPapersComponent {
-  papers: PaperDetails[] = [
-    {
-      cid: 1,
-      title: "A paper about something",
-      authors: "John Doe",
-      abstract: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet lectus in eros semper lacinia. Etiam vel sagittis ipsum, non lacinia ante. Etiam eget eros vestibulum, ultricies purus ut, blandit diam. Aliquam erat volutpat. Nulla nisl metus, fringilla eget rhoncus a, cursus scelerisque augue. Duis a lacus eget leo malesuada porttitor. Nunc ligula diam, feugiat id metus vitae, condimentum cursus diam. Phasellus sed dignissim nisi. Cras hendrerit neque nunc, vitae pellentesque nunc tempor eu. Pellentesque eu lectus at magna pulvinar pharetra eget cursus nulla. Donec eleifend tempus libero eget ullamcorper. Fusce in nibh rutrum lorem feugiat tempor. Maecenas orci diam, tempus non nisi scelerisque, lobortis dignissim arcu.",
-      keywords: ["something", "paper", "bla", "lorem", "ipsum"],
-      date: "2020-01-01",
-      doi: "10.1234/123456"
-    },
-  ];
+  papers: PaperDetails[] = [];
 
-  paperReputation: PaperReputations = {
-    1: 100
+  paperReputations: PaperReputations = {};
+
+  constructor(private web3Service: Web3Service, private ipfsService: IpfsService) {
+
+    this.ipfsService.getMyPapers().then((paperFiles: string[] | undefined) => {
+      console.log("My papers: ", paperFiles);
+    
+      console.log("Extracting my papers from papers info...");
+      this.ipfsService.papersInfo.subscribe((papersInfo: any[]) => {
+        console.log("Filtering Papers info: ", papersInfo);
+        this.papers = papersInfo.filter((paperInfo: any) => paperFiles?.includes(paperInfo.pdfCid));
+
+        this.paperReputations = web3Service.paperReputations;
+        console.log("Paper reputations: ", this.paperReputations);
+      });
+    });
   }
 }

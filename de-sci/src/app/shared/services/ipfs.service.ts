@@ -62,12 +62,24 @@ export class IpfsService {
           abstract: paperInfo.abstract,
           keywords: paperInfo.keywords,
           date: paperInfo.date,
-          doi: paperInfo.doi
+          doi: paperInfo.doi,
+          pdfCid: paperInfo.pdfCid
           }
         }) );
     });
   }
 
+  async getMyPapers() {
+    if(this._client && this.web3Service.loggedIn) {
+      const papers: any[] = [];
+
+      for await (let resPart of this._client.files.ls('/' + this.web3Service.accounts[0].slice(2, -1))) {
+        papers.push(resPart.cid.toString());
+      }
+
+      return papers;
+    } else return undefined;
+  }
 
   async addFile(localFilePath: string, file: any, progress: any = null) {
     if(this._client && this.web3Service.loggedIn) {
@@ -186,6 +198,7 @@ export class IpfsService {
 
       // parse byte array and push it to the results array
       let paperInfo = JSON.parse(new TextDecoder().decode(fileBuffer))
+      paperInfo.pdfCid = paperInfo.cid;
       paperInfo.cid = file.cid.toString();
       results.push(paperInfo);
     }

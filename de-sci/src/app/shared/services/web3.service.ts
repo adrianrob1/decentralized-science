@@ -54,11 +54,12 @@ export class Web3Service {
 
   private logEvents() {
     // log events
+    console.warn("Logging events...");
     this._contract.events.allEvents({ fromBlock: 0 },  (error: any, event: any) => {
       if(error)
-        console.log("Error: ", error);
+        console.error("Error: ", error);
       else {
-        //console.log("Event: ", event);
+        console.warn("Event: ", event);
 
         if(!this.pastEvents[event.event])
           this.pastEvents[event.event] = [event];
