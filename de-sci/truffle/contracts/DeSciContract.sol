@@ -114,7 +114,7 @@ contract DeSciContract {
         emit PapersReviews(papersReviewsCid);
     }
 
-    function getPasperAuthor(string calldata ipfsCid) public {
+    function getPaperAuthor(string calldata ipfsCid) public {
         emit PaperAuthor(ipfsCid, paperAuthors[ipfsCid]);
     }
 }
